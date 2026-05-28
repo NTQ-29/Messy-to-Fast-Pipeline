@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # Relational Database Layer
+  postgres:
+    image: postgres:16-alpine
+    container_name: pipeline_postgres
+    environment:
+      POSTGRES_USER: nick_admin
+      POSTGRES_PASSWORD: password123 # In production, use environment variables!
+      POSTGRES_DB: analytics_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - pipeline_network
+
+  # Caching Layer
+  redis:
+    image: redis:7-alpine
+    container_name: pipeline_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - pipeline_network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  pipeline_network:
+    driver: bridge
